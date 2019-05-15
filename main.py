@@ -69,7 +69,7 @@ class MainApp(tk.Tk):
                 poke1 = POKEMON.index(self.poke_one.get()) + 1
                 poke2 = POKEMON.index(self.poke_two.get()) + 1
                 poke3 = POKEMON.index(self.poke_three.get()) + 1
-                print(poke1, poke2, poke3)
+                self.applyChanges([poke1, poke2, poke3])
 
         self.button = tk.Button(self, text="OK", command=ok, width=5)
         self.button.grid(row=3, column=1, padx=5, pady=5)
@@ -82,11 +82,12 @@ class MainApp(tk.Tk):
         self.file_selector.delete(0,END)
         self.file_selector.insert(0,file)
 
+    def applyChanges(self, pokemon):
+        offsets = [0x169BB5, 0x169D82, 0x169DB8]
+        with open(self.poke_rom.get(), 'r+b') as f:
+            for i in range(0, 3):
+                f.seek(offsets[i])
+                f.write(bytes([pokemon[i]]))
+
 if __name__ == '__main__':
     MainApp().run()
-
-#offset = 0x169D82
-#update = b'\x96'
-#with open('Pokemon - Fire Red.GBA', 'r+b') as f:
-    #f.seek(offset)
-    #f.write(update)
